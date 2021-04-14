@@ -8,6 +8,7 @@ import MovieHeader from './components/MovieHeader';
 
 import EditMovieForm from './components/EditMovieForm';
 import FavoriteMovieList from './components/FavoriteMovieList';
+import AddMovieForm from "./components/AddMovieForm";
 
 import axios from 'axios';
 
@@ -26,11 +27,13 @@ const App = (props) => {
   }, []);
 
   const deleteMovie = (id)=> {
+    // handles the axios delete by finding the array in the state and if it doesnt match the id in our axios delete call
+    setMovies(movies.filter(item => item.id !== parseInt(id)))
   }
 
-  const addToFavorites = (movie) => {
+  // const addToFavorites = (movie) => {
     
-  }
+  // }
 
   return (
     <div>
@@ -44,13 +47,22 @@ const App = (props) => {
           <FavoriteMovieList favoriteMovies={favoriteMovies}/>
         
           <Switch>
-            <Route path="/movies/edit/:id">
+
+            <Route 
+              path="/movies/edit/:id"
+              render={props => <EditMovieForm {...props} movie={movies} setMovie={setMovies}/>}></Route>
+
+            {/* THIS PATH SCREWED ME OVER FOR NOT BEING ON TOP OF /MOVIES/:ID CAUSE IT KEPT SENDING ME TO /EDIT */}
+            {/* exact path didn't help, literally just the layout of Route messed me over */}
+            <Route path='/movies/add'>
+              <AddMovieForm setMovie={setMovies}/>
             </Route>
 
             <Route path="/movies/:id">
-              <Movie/>
+              <Movie deleteMovie={deleteMovie} movies={movies} setMovie={setMovies} />
             </Route>
 
+            
             <Route path="/movies">
               <MovieList movies={movies}/>
             </Route>
